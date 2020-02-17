@@ -1,0 +1,82 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="radioButtonStyle">@style/CustomRadioButton</item>
+    </style>
+
+
+    <style name="Line">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:shadowColor">@android:color/transparent</item>
+        <item name="android:layout_width">4dp</item>
+        <item name="android:maxWidth">4dp</item>
+    </style>
+
+    <style name="TopLine" parent="Line">
+        <item name="android:background">@drawable/bg_top_line</item>
+        <item name="android:layout_marginBottom">1dp</item>
+    </style>
+
+    <style name="BottomLine" parent="Line">
+        <item name="android:background">@drawable/bg_bottom_line</item>
+        <item name="android:layout_marginTop">1dp</item>
+    </style>
+
+    <style name="CompleteLine" parent="Line">
+        <item name="android:background">@drawable/bg_line</item>
+    </style>
+
+    <style name="BoldTitle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/nunito_bold</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="BoldTitle.Large">
+        <item name="android:textSize">48sp</item>
+        <item name="android:fontFamily">@font/nunito_bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="BoldTitle.Purple" parent="BoldTitle">
+        <item name="android:textColor">@color/colorLightPurple</item>
+    </style>
+
+    <style name="BoldTitle.Pink" parent="BoldTitle">
+        <item name="android:textColor">@color/colorPink</item>
+    </style>
+
+
+    <style name="CalendarFont" parent="android:TextAppearance.DeviceDefault.Small">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/nunito_bold</item>
+    </style>
+
+    <style name="CustomRadioButton">
+        <item name="android:button">@null</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="CustomFloating" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="android:colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="TabLayout" parent="Widget.MaterialComponents.TabLayout.Colored">
+        <item name="tabTextAppearance">@style/TabTextAppearance</item>
+    </style>
+
+    <style name="TabTextAppearance">
+        <item name="android:fontFamily">@font/nunito_bold</item>
+    </style>
+
+</resources>

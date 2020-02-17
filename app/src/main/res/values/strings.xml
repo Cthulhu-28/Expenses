@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Expenses</string>
+    <string name="titles_item_detail_default_amount">0</string>
+    <string name="titles_item_detail_default_time">00:00</string>
+    <string name="monto">Monto</string>
+    <string name="detalle">Detalles</string>
+    <string name="new_expenditure">Nuevo gasto</string>
+    <string name="add_expenditure">Guardar</string>
+    <string name="titles_detail_activity_expenditures">Gastos</string>
+    <string name="titles_detail_activity_income">Ingresos</string>
+</resources>
