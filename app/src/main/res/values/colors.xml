@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">@color/colorDarkPurple</color>
-    <color name="colorPrimaryDark">@color/colorLightPurple</color>
+    <color name="colorPrimaryDark">@color/colorDarkPurple</color>
     <color name="colorAccent">@color/colorOrange</color>
     <color name="colorYellow">#f1e678</color>
     <color name="colorOrange">#ed8f60</color>

@@ -5,6 +5,7 @@ import co.cr.expenses.data.base.DataManager
 import co.cr.expenses.model.Detail
 import co.cr.expenses.model.ExpendingDay
 import co.cr.expenses.model.Expenditure
+import co.cr.expenses.model.Summary
 import co.cr.expenses.ui.base.BasePresenter
 import java.lang.RuntimeException
 import java.util.*
@@ -13,20 +14,27 @@ class DetailPresenter (val dataManager: DataManager): BasePresenter<DetailMvpVie
 
     private var date: Date? = null
     private lateinit var day: ExpendingDay
+    private var summary: Summary? = null
 
-    fun loadSummary(date: Date){
+    fun loadSummary(reload: Boolean = true) = loadSummary(date!!, reload)
+
+    fun loadSummary(date: Date, reload: Boolean = true){
         this.date = date
-        dataManager.getDaySummary(
-            date,
-            DataEvent(
-                onSuccess = {
-                    mvpView?.onUpdateSummary(it.data)
-                },
-                onError = {
-                    mvpView?.onSummaryFailed()
-                }
+        if(summary == null) {
+            dataManager.getDaySummary(
+                date,
+                DataEvent(
+                    onSuccess = {
+                        mvpView?.onUpdateSummary(it.data)
+                    },
+                    onError = {
+                        mvpView?.onSummaryFailed()
+                    }
+                )
             )
-        )
+        }else{
+            mvpView?.onUpdateSummary(summary!!)
+        }
     }
 
     fun addIncome(income: Detail){
@@ -85,6 +93,72 @@ class DetailPresenter (val dataManager: DataManager): BasePresenter<DetailMvpVie
         }
     }
 
+    fun deleteExpenditure(expenditure: Expenditure){
+        checkDate()
+        dataManager.deleteExpenditure(date!!, expenditure,
+            DataEvent(
+                onSuccess = {
+                    mvpView?.onExpenditureDeleted()
+                },
+                onError = {
+                    mvpView?.onExpenditureFailed()
+                }
+            )
+        )
+    }
+
+    fun deleteIncome(detail: Detail){
+        checkDate()
+        dataManager.deleteIncome(date!!, detail,
+            DataEvent(
+                onSuccess = {
+                    mvpView?.onIncomeDeleted()
+                },
+                onError = {
+                    mvpView?.onIncomeFailed()
+                }
+            )
+        )
+    }
+
+    fun loadExpenditures(){
+        checkDate()
+        dataManager.getExpenditures(date!!,
+            DataEvent(
+                onSuccess = {
+                    mvpView?.onListExpenditures(it.data)
+                },
+                onError = {
+
+                }
+            )
+        )
+    }
+
+    fun loadIncome(){
+        checkDate()
+        dataManager.getIncome(date!!,
+            DataEvent(
+                onSuccess = {
+                    mvpView?.onListIncome(it.data)
+                },
+                onError = {
+
+                }
+            )
+        )
+    }
+
+    private fun checkDate(){
+        if (date == null)
+            throw DateNotSetException("The date is null")
+    }
+
     inner class DateNotSetException(exception: String): RuntimeException(exception)
+
+    override fun detachView() {
+        super.detachView()
+        dataManager.destroy()
+    }
 
 }

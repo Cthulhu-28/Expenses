@@ -22,4 +22,12 @@ interface DetailMvpView: MvpView{
     fun onUpdateSummary(summary: Summary)
 
     fun onSummaryFailed()
+
+    fun onExpenditureDeleted()
+
+    fun onIncomeDeleted()
+
+    fun onExpenditureDeleteFailed()
+
+    fun onIncomeDeleteFailed()
 }

@@ -8,9 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.cr.expenses.R
+import co.cr.expenses.model.Detail
 import kotlinx.android.synthetic.main.fragment_record.view.*
 
-class RecordFragment: Fragment(){
+class RecordFragment(val deleteEvent: DeleteEvent): Fragment(){
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: DetailAdapter
@@ -26,13 +27,13 @@ class RecordFragment: Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerView = view.listRecords
-        adapter = DetailAdapter()
+        adapter = DetailAdapter(deleteEvent)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
     }
 
-    fun updateList(){
-        adapter.notifyDataSetChanged()
+    fun updateList(list: MutableList<Detail>){
+        adapter.updateList(list)
     }
 
 }

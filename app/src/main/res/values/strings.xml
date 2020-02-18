@@ -8,4 +8,8 @@
     <string name="add_expenditure">Guardar</string>
     <string name="titles_detail_activity_expenditures">Gastos</string>
     <string name="titles_detail_activity_income">Ingresos</string>
+    <string name="yes">Aceptar</string>
+    <string name="no">No</string>
+    <string name="questions_delete_item">Desea eliminar este elemento?</string>
+    <string name="add_income">Guardar</string>
 </resources>

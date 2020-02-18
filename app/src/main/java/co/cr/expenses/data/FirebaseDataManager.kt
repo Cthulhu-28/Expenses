@@ -8,14 +8,12 @@ import co.cr.expenses.model.ExpendingDay
 import co.cr.expenses.model.Expenditure
 import co.cr.expenses.model.Summary
 import co.cr.expenses.utils.timestamp
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import java.util.*
 
 class FirebaseDataManager: DataManager{
     val database = FirebaseDatabase.getInstance()
+    val listeners = hashMapOf<DatabaseReference, ValueEventListener>()
 
     override fun findExpendingDay(date: Date, event: DataEvent<ExpendingDay>) {
         val reference = database.reference.child("days")
@@ -92,9 +90,9 @@ class FirebaseDataManager: DataManager{
             }
     }
 
-    override fun getDaySummary(date: Date, event: DataEvent<Summary>) {
-        val query = database.reference.child("days/${date.timestamp()}/summary")
-        query.addListenerForSingleValueEvent(object: ValueEventListener{
+  /*  override fun getDaySummary(date: Date, event: DataEvent<Summary>) {
+        val reference = database.reference.child("days/${date.timestamp()}/summary")
+        val listener = object: ValueEventListener{
             override fun onDataChange(p0: DataSnapshot) {
                 if(p0.exists()){
                     val summary = p0.getValue(Summary::class.java)
@@ -107,6 +105,136 @@ class FirebaseDataManager: DataManager{
             override fun onCancelled(p0: DatabaseError) {
                 event.onError("Canceled")
             }
-        });
+        }
+        reference.addValueEventListener(listener)
+        listeners.put(reference, listener)
+    }*/
+
+    override fun getDaySummary(date: Date, event: DataEvent<Summary>, attach: Boolean) {
+        val reference = database.reference.child("days/${date.timestamp()}/summary")
+        val listener = object : ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                if (p0.exists()) {
+                    val summary = p0.getValue(Summary::class.java)
+                    event.onSuccess(Response(summary!!))
+                } else {
+                    event.onSuccess(Response(Summary()))
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                event.onError("Canceled")
+            }
+        }
+        if(attach) {
+            reference.addValueEventListener(listener)
+            listeners.put(reference, listener)
+        }else{
+            reference.addListenerForSingleValueEvent(listener)
+        }
+
+    }
+
+    override fun getSummary(event: DataEvent<Summary>) {
+        val reference = database.reference.child("days/summary")
+        val listener = object : ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                if (p0.exists()) {
+                    val summary = p0.getValue(Summary::class.java)
+                    event.onSuccess(Response(summary!!))
+                } else {
+                    event.onSuccess(Response(Summary()))
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                event.onError("Canceled")
+            }
+        }
+        reference.addListenerForSingleValueEvent(listener)
+    }
+
+    override fun getExpenditures(date: Date, event: DataEvent<List<Expenditure>>) {
+        val query = database.reference.child("days/${date.timestamp()}/expenditures")
+        query.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(datasnapshot: DataSnapshot) {
+                val expenditures = mutableListOf<Expenditure>()
+                if(datasnapshot.exists()){
+                    for(snapshot in datasnapshot.children){
+                        val expenditure = snapshot.getValue(Expenditure::class.java)!!
+                        expenditure.time = snapshot.key!!.toInt()
+                        expenditures.add(expenditure)
+                    }
+                }
+                event.onSuccess(Response(expenditures))
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                event.onError("Canceled")
+            }
+        })
+    }
+
+    override fun getIncome(date: Date, event: DataEvent<List<Detail>>) {
+        val query = database.reference.child("days/${date.timestamp()}/income")
+        query.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(datasnapshot: DataSnapshot) {
+                val incomes = mutableListOf<Detail>()
+                if(datasnapshot.exists()){
+                    for(snapshot in datasnapshot.children){
+                        val income = snapshot.getValue(Detail::class.java)!!
+                        income.time = snapshot.key!!.toInt()
+                        incomes.add(income)
+                    }
+                }
+                event.onSuccess(Response(incomes))
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                event.onError("Canceled")
+            }
+        })
+    }
+
+    override fun deleteExpenditure(date: Date, expenditure: Expenditure, event: DataEvent<Expenditure>) {
+        val reference = database.reference.child("days/${date.timestamp()}/expenditures/${expenditure.time}")
+        reference.removeValue()
+            .addOnCompleteListener {
+                if(it.isSuccessful){
+                    event.onSuccess(Response(expenditure))
+                }else{
+                    event.onError(it.exception?.message!!)
+                }
+            }
+            .addOnFailureListener {
+                event.onError(it.message!!)
+            }
+            .addOnCanceledListener {
+                event.onError("Canceled")
+            }
+    }
+
+    override fun deleteIncome(date: Date, detail: Detail, event: DataEvent<Detail>) {
+        val reference = database.reference.child("days/${date.timestamp()}/income/${detail.time}")
+        reference.removeValue()
+            .addOnCompleteListener {
+                if(it.isSuccessful){
+                    event.onSuccess(Response(detail))
+                }else{
+                    event.onError(it.exception?.message!!)
+                }
+            }
+            .addOnFailureListener {
+                event.onError(it.message!!)
+            }
+            .addOnCanceledListener {
+                event.onError("Canceled")
+            }
+    }
+
+    override fun destroy() {
+        listeners.forEach {
+            listeners.remove(it.key)
+        }
     }
 }

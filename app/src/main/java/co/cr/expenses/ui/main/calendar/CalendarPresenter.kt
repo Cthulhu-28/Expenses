@@ -1,15 +1,35 @@
 package co.cr.expenses.ui.main.calendar
 
+import co.cr.expenses.data.base.DataEvent
+import co.cr.expenses.data.base.DataManager
 import co.cr.expenses.ui.base.BasePresenter
 import java.util.*
 
-class CalendarPresenter: BasePresenter<CalendarMvpView>(){
+class CalendarPresenter(private val dataManager: DataManager): BasePresenter<CalendarMvpView>(){
 
-    fun loadSummary(date: Date){
-        mvpView?.showSummary()
+    fun loadSummary(){
+        dataManager.getSummary(
+            DataEvent(
+                onSuccess = {
+                    mvpView?.showDate(it.data)
+                },
+                onError = {
+
+                }
+            )
+        )
     }
 
     fun loadDateSummary(date: Date){
-        mvpView?.showDate()
+        dataManager.getDaySummary(date,
+            DataEvent(
+                onSuccess = {
+                    mvpView?.showSummary(it.data)
+                },
+                onError = {
+
+                }
+            ), false
+        )
     }
 }

@@ -14,5 +14,17 @@ interface DataManager{
 
     fun addExpenditure(day: ExpendingDay, expenditure: Expenditure, event: DataEvent<ExpendingDay>)
 
-    fun getDaySummary(date: Date, event: DataEvent<Summary>)
+    fun getDaySummary(date: Date, event: DataEvent<Summary>, attach: Boolean = true)
+
+    fun getSummary(event: DataEvent<Summary>)
+
+    fun getExpenditures(date: Date, event: DataEvent<List<Expenditure>>)
+
+    fun getIncome(date: Date, event: DataEvent<List<Detail>>)
+
+    fun deleteExpenditure(date:Date, expenditure: Expenditure, event: DataEvent<Expenditure>)
+
+    fun deleteIncome(date:Date, detail: Detail, event: DataEvent<Detail>)
+
+    fun destroy()
 }
